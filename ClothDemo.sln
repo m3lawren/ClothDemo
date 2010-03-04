@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ClothDemo", "ClothDemo\ClothDemo.vcproj", "{53618A11-4298-437B-8781-0D331EDB86C5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2545F599-F883-4C05-943E-C8BEE2443FEE} = {2545F599-F883-4C05-943E-C8BEE2443FEE}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Cloth", "Cloth\Cloth.vcproj", "{2545F599-F883-4C05-943E-C8BEE2443FEE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{53618A11-4298-437B-8781-0D331EDB86C5}.Debug|Win32.ActiveCfg = Debug|Win32
+		{53618A11-4298-437B-8781-0D331EDB86C5}.Debug|Win32.Build.0 = Debug|Win32
+		{53618A11-4298-437B-8781-0D331EDB86C5}.Release|Win32.ActiveCfg = Release|Win32
+		{53618A11-4298-437B-8781-0D331EDB86C5}.Release|Win32.Build.0 = Release|Win32
+		{2545F599-F883-4C05-943E-C8BEE2443FEE}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2545F599-F883-4C05-943E-C8BEE2443FEE}.Debug|Win32.Build.0 = Debug|Win32
+		{2545F599-F883-4C05-943E-C8BEE2443FEE}.Release|Win32.ActiveCfg = Release|Win32
+		{2545F599-F883-4C05-943E-C8BEE2443FEE}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
