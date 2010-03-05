@@ -7,7 +7,7 @@ namespace Cloth {
 
 	class Constraint {
 	public:
-		Constraint(Point&, Point&, float len);
+		Constraint(Point&, Point&);
 		~Constraint();
 
 		void enforce();

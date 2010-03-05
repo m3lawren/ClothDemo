@@ -9,8 +9,7 @@
 
 namespace Cloth {
 
-	Constraint::Constraint(Point& a, Point& b, float len) : _a(a), _b(b), _len(len) {
-		_len = (_a.pos() - _b.pos()).mag();
+	Constraint::Constraint(Point& a, Point& b) : _a(a), _b(b), _len((a.pos() - b.pos()).mag()) {		
 	}
 
 	Constraint::~Constraint() {

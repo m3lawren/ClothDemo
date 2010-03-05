@@ -44,7 +44,7 @@ namespace Cloth {
 
 	void Point::tick(const Cloth::Vector3& gravity) {
 		if (_fixed) return;
-		Cloth::Vector3 npos = _pos + 0.99f * (_pos - _oldPos) + gravity;
+		Cloth::Vector3 npos = _pos + 0.995f * (_pos - _oldPos) + gravity;
 		_oldPos = _pos;
 		_pos = npos;
 

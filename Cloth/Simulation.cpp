@@ -35,6 +35,23 @@ namespace Cloth {
 			}
 		}
 	}
+
+	void Simulation::clear() {
+		_bounds.init(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+		_gravity = Cloth::Vector3();
+
+		for (cvec_t::iterator i = _constraints.begin(); i != _constraints.end(); i++) {
+			delete *i;
+		}
+
+		for (pvec_t::iterator i = _points.begin(); i != _points.end(); i++) {
+			delete *i;
+		}
+
+		_constraints.clear();
+		_points.clear();
+		_indices.clear();
+	}
 	
 	unsigned Simulation::addPoint(float x, float y, float z) {
 		_points.push_back(new Cloth::Point(x, y, z));
@@ -58,8 +75,9 @@ namespace Cloth {
 		return _points.size() - 1;
 	}
 
-	void Simulation::addConstraint(unsigned a, unsigned b, float l) {
-		_constraints.push_back(new Cloth::Constraint(*_points[a], *_points[b], l));
+	void Simulation::addConstraint(unsigned a, unsigned b) {
+		_constraints.push_back(new Cloth::Constraint(*_points[a], *_points[b]));
+		_indices.push_back(std::pair<unsigned,unsigned>(a,b));
 	}
 
 	void Simulation::setGravity(float dx, float dy, float dz) {
@@ -90,12 +108,8 @@ namespace Cloth {
 		return _constraints.size();
 	}
 
-	Cloth::Constraint& Simulation::constraint(unsigned i) {
-		return *_constraints[i];
-	}
-
-	const Cloth::Constraint& Simulation::constraint(unsigned i) const {
-		return *_constraints[i];
+	const std::pair<unsigned,unsigned>& Simulation::constraint(unsigned i) const {
+		return _indices[i];
 	}
 
 }

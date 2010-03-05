@@ -4,6 +4,7 @@
 #include <Cloth/Constraint.h>
 #include <Cloth/Vector.h>
 
+#include <utility>
 #include <vector>
 
 namespace Cloth {
@@ -15,13 +16,15 @@ namespace Cloth {
 
 		void tick();
 
+		void clear();
+
 		unsigned addPoint(float x, float y, float z);
 		unsigned addPoint(const Cloth::Vector3&);
 
 		unsigned addFixed(float x, float y, float z);
 		unsigned addFixed(const Cloth::Vector3&);
 
-		void addConstraint(unsigned, unsigned, float l);
+		void addConstraint(unsigned, unsigned);
 
 		void setGravity(float dx, float dy, float dz);
 		void setGravity(const Cloth::Vector3&);
@@ -33,17 +36,21 @@ namespace Cloth {
 		const Cloth::Point& point(unsigned) const;
 
 		unsigned numConstraints() const;
-		Cloth::Constraint& constraint(unsigned);
-		const Cloth::Constraint& constraint(unsigned) const;
+		const std::pair<unsigned,unsigned>& constraint(unsigned) const;
 
 	private:
-		typedef std::vector<Cloth::Point*>		pvec_t;
-		typedef std::vector<Cloth::Constraint*> cvec_t;
+		typedef std::vector<Cloth::Point*>					pvec_t;
+		typedef std::vector<Cloth::Constraint*>				cvec_t;
+		typedef std::vector<std::pair<unsigned,unsigned> >	ivec_t;
 
 		Cloth::BoundsConstraint	_bounds;
 		pvec_t					_points;
 		cvec_t					_constraints;
-		Cloth::Vector3			_gravity;
+		ivec_t					_indices;
+		Cloth::Vector3			_gravity;		
+
+		Simulation(const Simulation&);
+		Simulation& operator=(const Simulation&);
 	};
 
 };
