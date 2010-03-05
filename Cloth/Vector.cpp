@@ -28,6 +28,18 @@ namespace Cloth {
 		return _z;
 	}
 
+	void Vector3::setX(float x) {
+		_x = x;
+	}
+
+	void Vector3::setY(float y) {
+		_y = y;
+	}
+
+	void Vector3::setZ(float z) {
+		_z = z;
+	}
+
 	Vector3& Vector3::operator+=(const Vector3& a) {
 		_x += a._x;
 		_y += a._y;

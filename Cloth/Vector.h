@@ -14,6 +14,9 @@ namespace Cloth {
 		float x() const;
 		float y() const;
 		float z() const;
+		void setX(float);
+		void setY(float);
+		void setZ(float);
 
 		Vector3& operator+=(const Vector3&);
 		Vector3& operator-=(const Vector3&);

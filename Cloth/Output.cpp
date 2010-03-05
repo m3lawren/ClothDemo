@@ -2,6 +2,10 @@
 
 #include <sstream>
 
+std::ostream& operator<<(std::ostream& s, const Cloth::Point& p) {
+	return s << p.pos();
+}
+
 std::ostream& operator<<(std::ostream& s, const Cloth::Vector3& v) {
 	std::ostringstream ss;
 	ss.precision(3);
