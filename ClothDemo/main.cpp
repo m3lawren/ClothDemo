@@ -43,11 +43,11 @@ void initSim() {
 	g_Sim.setBounds(-8.0f, -8.0f, 0.0f, 8.0f, 8.0f, 0.0f);
 	g_Sim.setGravity(0.0f, -0.005f, 0.0f);
 
-	int npts = 40;
+	unsigned npts = 40;
 	float delta = 10.0f / (npts - 1);
 
 	g_Sim.addFixed(-5.0f, 4.5f, 0.0f);
-	for (int i = 1; i < npts - 1; i++) {
+	for (unsigned i = 1; i < npts - 1; i++) {
 		g_Sim.addPoint(-5.0f + i * delta, 4.5f, 0.0f);
 	}
 	g_Sim.addFixed(5.0f, 4.5f, 0.0f);
