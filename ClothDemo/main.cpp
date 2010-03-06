@@ -21,7 +21,13 @@ LPDIRECT3D9 d3d;    // the pointer to our Direct3D interface
 LPDIRECT3DDEVICE9 d3ddev;    // the pointer to the device class
 LPDIRECT3DVERTEXBUFFER9 v_buffer = NULL;    // the pointer to the vertex buffer
 LPDIRECT3DINDEXBUFFER9 i_buffer = NULL;
+LPDIRECT3DVERTEXBUFFER9 v_bordbuffer = NULL;
 LPD3DXFONT font;
+
+const float MINX = -7.0f;
+const float MINY = -5.5f;
+const float MAXX =  7.0f;
+const float MAXY =  5.5f;
 
 // function prototypes
 void initD3D(HWND hWnd);    // sets up and initializes Direct3D
@@ -40,10 +46,69 @@ Cloth::Simulation g_Sim;
 void initSim() {
 	g_Sim.clear();
 
-	g_Sim.setBounds(-8.0f, -8.0f, 0.0f, 8.0f, 8.0f, 0.0f);
-	g_Sim.setGravity(0.0f, -0.005f, 0.0f);
+	g_Sim.setBounds(MINX, MINY, 0.0f, MAXX, MAXY, 0.0f);
+	g_Sim.setGravity(0.0f, -0.001f, 0.0f);
 
-	unsigned npts = 40;
+	unsigned npts = 13;
+	float dx = 6.0f / (npts - 1);
+
+	for (unsigned i = 0; i < npts; i++) {
+		for (unsigned j = 0; j < npts; j++) {
+			g_Sim.addPoint(-3.0f + dx * j, MAXY - 0.5f - dx * i, 0.0f);
+		}
+	}
+
+	for (unsigned i = 0; i < npts; i++) {
+		for (unsigned j = 0; j < npts; j++) {
+			if (j > 0) {
+				g_Sim.addConstraint(i * npts + j - 1, i * npts + j);
+			}
+			if (i > 0) {
+				g_Sim.addConstraint((i - 1) * npts + j, i * npts + j);
+			}
+		}
+	}
+	g_Sim.point(0).setFixed(true);
+	g_Sim.point(npts - 1).setFixed(true);
+
+	/*unsigned npts = 60;
+	float dx = 8.0f / (npts - 1);	
+	float dy = sqrt(3.0f) / 2.0f * dx;
+	
+	for (unsigned i = 0; i < npts; i++) {
+		g_Sim.addPoint(-4.0f + i * dx, 4.5f, 0.0f);
+	}
+	for (unsigned i = 0; i < npts - 1; i++) {
+		g_Sim.addPoint(-4.0f + (dx / 2.0f) + i * dx, 4.5f - dy, 0.0f);
+	}
+	for (unsigned i = 0; i < npts - 2; i++) {
+		g_Sim.addPoint(-4.0f + (i + 1) * dx, 4.5f - dy * 2, 0.0f);
+	}
+	g_Sim.point(0).setFixed(true);
+	//g_Sim.point(npts - 1).setFixed(true);
+	//g_Sim.point(npts * 2 - 1).setFixed(true);
+	//g_Sim.point(npts * 3 - 4).setFixed(true);			
+
+	for (unsigned i = 1; i < npts; i++) {
+		g_Sim.addConstraint(i - 1, i);					
+	}
+	for (unsigned i = 0; i < npts - 1; i++) {
+		g_Sim.addConstraint(i, npts + i);
+		g_Sim.addConstraint(i + 1, npts + i);
+	}
+	for (unsigned i = 1; i < npts - 1; i++) {
+		g_Sim.addConstraint(npts + i - 1, npts + i);
+	}
+	for (unsigned i = 0; i < npts - 2; i++) {
+		g_Sim.addConstraint(npts + i, npts * 2 - 1 + i);
+		g_Sim.addConstraint(npts + i + 1, npts * 2 - 1 + i);
+	}
+	for (unsigned i = 1; i < npts - 2; i++) {
+		g_Sim.addConstraint(npts * 2 + i - 2, npts * 2 - 1 + i);
+	}*/
+
+
+	/*unsigned npts = 41;
 	float delta = 10.0f / (npts - 1);
 
 	g_Sim.addFixed(-5.0f, 4.5f, 0.0f);
@@ -56,14 +121,13 @@ void initSim() {
 		g_Sim.addConstraint(i - 1, i);
 	}
 
-	g_Sim.addPoint(0.0f, 4.5f - delta, 0.0f);
-	g_Sim.addConstraint(npts / 2 - 1, npts);
+	g_Sim.addPoint(0.0f + delta / 2.0f, 4.5f - delta, 0.0f);
 	g_Sim.addConstraint(npts / 2, npts);
 
 	for (unsigned i = 0; i < npts / 2; i++) {
-		g_Sim.addPoint(0.0f + delta / 2.0f * (i + 1), 4.5f - delta * (i + 2), 0.0f);
+		g_Sim.addPoint(0.0f + delta / 2.0f * (i + 2), 4.5f - delta * (i + 2), 0.0f);
 		g_Sim.addConstraint(g_Sim.numPoints() - 2, g_Sim.numPoints() - 1);
-	}
+	}*/
 }
 
 // the entry point for any Windows program
@@ -132,7 +196,7 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
             return 0;       
 		case WM_KEYDOWN:
 			switch (wParam) {
-				case VK_ESCAPE:
+				case VK_ESCAPE: case 'q': case 'Q':
 					DestroyWindow(hWnd);
 					break;
 				case VK_SPACE:
@@ -140,6 +204,9 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 					break;
 				case 'r': case 'R':
 					initSim();
+					break;
+				case 'f': case 'F':
+					g_Sim.point(0).setFixed(false);
 					break;
 			}		
 			return 0;
@@ -250,7 +317,7 @@ void render_frame(void)
 		strcpy_s(buff, 1024, "FPS: ??");
 	}
 	font->DrawText(NULL, buff, -1, &r, DT_CALCRECT, D3DCOLOR_XRGB(1, 1, 1));
-	font->DrawText(NULL, buff, -1, &r, 0, D3DCOLOR_XRGB(255, 255, 255));
+	font->DrawText(NULL, buff, -1, &r, 0, D3DCOLOR_XRGB(0, 255, 0));
 
     // SET UP THE PIPELINE    
 
@@ -272,16 +339,17 @@ void render_frame(void)
                                100.0f);    // the far view-plane
 
     d3ddev->SetTransform(D3DTS_PROJECTION, &matProjection);    // set the projection
-
-    // select the vertex buffer to display
-    d3ddev->SetStreamSource(0, v_buffer, 0, sizeof(CUSTOMVERTEX));
-	d3ddev->SetIndices(i_buffer);
-
+    
 	D3DXMATRIX matIdentity;
 	D3DXMatrixIdentity(&matIdentity);
 
 	d3ddev->SetTransform(D3DTS_WORLD, &matIdentity);	
 
+	d3ddev->SetStreamSource(0, v_bordbuffer, 0, sizeof(CUSTOMVERTEX));
+	d3ddev->DrawPrimitive(D3DPT_LINESTRIP, 0, 4);
+
+	d3ddev->SetStreamSource(0, v_buffer, 0, sizeof(CUSTOMVERTEX));
+	d3ddev->SetIndices(i_buffer);
 	d3ddev->DrawIndexedPrimitive(D3DPT_LINELIST, 0, 0, g_Sim.numConstraints() * 2, 0, g_Sim.numConstraints());
 
     d3ddev->EndScene();
@@ -314,6 +382,12 @@ void init_graphics(void)
                                D3DPOOL_MANAGED,
                                &v_buffer,
                                NULL);
+	d3ddev->CreateVertexBuffer(5*sizeof(CUSTOMVERTEX),
+		                       D3DUSAGE_WRITEONLY,
+							   CUSTOMFVF,
+							   D3DPOOL_MANAGED,
+							   &v_bordbuffer,
+							   NULL);
 	d3ddev->CreateIndexBuffer(g_Sim.numConstraints() * 2 * sizeof(short),
 							  D3DUSAGE_WRITEONLY,
 							  D3DFMT_INDEX16,
@@ -323,6 +397,23 @@ void init_graphics(void)
 
 
 	HRESULT hr = D3DXCreateFont(d3ddev, 17, 0, FW_NORMAL, 0, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, ANTIALIASED_QUALITY, DEFAULT_PITCH | FF_DONTCARE, TEXT("Courier New"), &font );
+
+	CUSTOMVERTEX* verts;
+	v_bordbuffer->Lock(0, 0, (void**)&verts, 0);
+	verts[0].X = MINX;
+	verts[0].Y = MINY;
+	verts[1].X = MINX;
+	verts[1].Y = MAXY;
+	verts[2].X = MAXX;
+	verts[2].Y = MAXY;
+	verts[3].X = MAXX;
+	verts[3].Y = MINY;
+	verts[4].X = MINX;
+	verts[4].Y = MINY;
+
+	verts[0].Z = verts[1].Z = verts[2].Z = verts[3].Z = verts[4].Z = 0.0f;
+	verts[0].COLOR = verts[1].COLOR = verts[2].COLOR = verts[3].COLOR = verts[4].COLOR = D3DCOLOR_XRGB(127, 127, 127);
+	v_bordbuffer->Unlock();
 
     short* indices;
     i_buffer->Lock(0, 0, (void**)&indices, 0);
