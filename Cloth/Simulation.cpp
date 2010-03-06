@@ -24,8 +24,8 @@ namespace Cloth {
 			(*iter)->tick(_gravity);
 		}
 
-		for (int i = 0; i < 1; i++) {
-			if (i % 2) {
+		for (int i = 0; i < 4; i++) {
+			if (i % 2 || true) {
 				for (cvec_t::iterator iter = _constraints.begin(); iter != _constraints.end(); iter++) {
 					(*iter)->enforce();
 				}

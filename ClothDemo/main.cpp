@@ -49,7 +49,7 @@ void initSim() {
 	g_Sim.setBounds(MINX, MINY, 0.0f, MAXX, MAXY, 0.0f);
 	g_Sim.setGravity(0.0f, -0.001f, 0.0f);
 
-	unsigned npts = 13;
+	unsigned npts = 31;
 	float dx = 6.0f / (npts - 1);
 
 	for (unsigned i = 0; i < npts; i++) {
@@ -70,6 +70,7 @@ void initSim() {
 	}
 	g_Sim.point(0).setFixed(true);
 	g_Sim.point(npts - 1).setFixed(true);
+	g_Sim.point(npts / 2).setFixed(true);
 
 	/*unsigned npts = 60;
 	float dx = 8.0f / (npts - 1);	
@@ -350,7 +351,16 @@ void render_frame(void)
 
 	d3ddev->SetStreamSource(0, v_buffer, 0, sizeof(CUSTOMVERTEX));
 	d3ddev->SetIndices(i_buffer);
-	d3ddev->DrawIndexedPrimitive(D3DPT_LINELIST, 0, 0, g_Sim.numConstraints() * 2, 0, g_Sim.numConstraints());
+
+	unsigned remaining = g_Sim.numConstraints();
+	unsigned off = 0;
+	while (remaining) {
+		unsigned toDraw = (remaining > 128) ? 128 : remaining;
+		d3ddev->DrawIndexedPrimitive(D3DPT_LINELIST, 0, 0, g_Sim.numPoints(), off, toDraw);
+		off += toDraw * 2;
+		remaining -= toDraw;
+	}
+	//d3ddev->DrawIndexedPrimitive(D3DPT_LINELIST, 0, 0, g_Sim.numConstraints() * 2, 0, g_Sim.numConstraints());
 
     d3ddev->EndScene();
 
